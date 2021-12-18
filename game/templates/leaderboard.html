@@ -1,0 +1,201 @@
+{% extends "base.html" %}
+{% load static %}
+{% block style %}
+@media only screen and (max-width: 200px) {
+      .masthead.segment {
+        min-height: 150px;
+      }
+      .masthead h1.ui.header {
+        font-size: 2em;
+        margin-top: 1.5em;
+      }
+      .masthead h2 {
+        margin-top: 0.5em;
+        font-size: 1.5em;
+      }
+    }
+    .masthead.segment {
+      min-height: 50px;
+      padding: 1em 0em;      
+    }
+    .masthead h1.ui.header {
+      margin-top: 0em;
+      margin-bottom: 0em;
+      font-size: 3em;
+      font-weight: normal;
+    }
+    .masthead h2 {
+      font-size: 2em;
+      font-weight: normal;
+      margin-bottom: 2em;
+    }
+    #head{
+      margin-bottom:1.5em;
+    }
+    body {
+      background-image: radial-gradient(#EAECC6, #2BC0E4);
+      background-color: #DADADA;
+      font-family:'Times New Roman';
+    }
+    ::-webkit-scrollbar {
+        width: 0;
+        background: transparent;
+    }
+    body > .grid {
+      height: 100%;
+    }
+    .ui.list{
+      height: 20%;
+      overflow-y: scroll;
+    }
+    td{
+      width: 50em;
+    }
+{% endblock %}
+{% block body %}
+<div id="head" class="ui inverted vertical masthead center aligned segment ">
+    <div class="ui text container">      
+      <h1 class="ui inverted header">Discussions & Leaderboard</h1><br>
+      <div class="ui four colum centered grid">
+        <div class="eight wide column">
+          <img class="massive ui image" src="{% static 'discuss.svg' %}">
+        </div>
+        <div class="eight wide column">
+          <img class="massive ui image" src="{% static 'winner.svg' %}">
+        </div>            
+      </div>
+      <br>
+      {% ifequal user "admin" %}
+      <a id="next" class="ui huge teal animated button" tabindex="0">
+        <div class="visible content" style="padding-left:1em;padding-right:1em;">Next</div>
+        <div class="hidden content">
+          <i class="right arrow icon"></i>
+        </div>
+      </a>
+      
+      {% endifequal %}
+    </div>
+  </div>
+  <div class="ui two column padded grid">
+    <div class="column">
+      <div class="ui centered segment container">
+        {{quiz.question}}
+      </div>
+      <div class="list">
+        <ul class="ui padded grid">
+          
+          <li class="ui segment seven wide column {% ifequal answer quiz.option1%}green{% endifequal %}" style="margin-top:0px;margin-bottom:0px;">{{quiz.option1}}</li>
+          <div class="ui one wide column"></div>
+          <li class="ui segment seven wide column {% ifequal answer quiz.option2%}green{% endifequal %}" style="margin-top:0px;margin-bottom:0px;">{{quiz.option2}}</li>
+          <div class="ui sixteen wide column"></div>
+          <li class="ui segment seven wide column {% ifequal answer quiz.option3%}green{% endifequal %}" style="margin-top:0px;margin-bottom:0px;">{{quiz.option3}}</li>
+          <div class="ui one wide column"></div>
+          <li class="ui segment seven wide column {% ifequal answer quiz.option4%}green{% endifequal %}" style="margin-top:0px;margin-bottom:0px;">{{quiz.option4}}</li>
+          
+        </ul>        
+      </div>
+      <br>
+
+    </div>
+
+    <div class=" container column">
+    <div class="centered ui segment">
+      <table class="ui very basic collapsing celled table">
+        <thead>
+          <tr><th><h2>Players</h2></th>
+          <th><h2>Marks</h2></th>
+        </tr></thead>
+        <tbody>
+          {% for top in leaderboard %}
+          <tr>
+            <td>
+              <h4 class="ui image header">
+                <img src="https://avatars.dicebear.com/v2/avataaars/{{top.0}}.svg" class="ui huge rounded image">
+                <div class="content">
+                  <h3>{{top.0}}</h3>
+              </div>
+            </h4></td>
+            <td>
+              {{top.1}}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+  </div>
+  </div>
+  
+
+  </div>
+  <script src="https://www.gstatic.com/firebasejs/4.8.1/firebase.js"></script>
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+  <script>
+    
+    var config = {
+    "apiKey": "AIzaSyDNn1-wkMm-g0cH2BKQ6XjdLTl6ldds8ZE",
+    "authDomain": "quizck-74e04.firebaseapp.com",
+    "projectId": "quizck-74e04",
+    "storageBucket": "quizck-74e04.appspot.com",
+    "messagingSenderId": "555502389734",
+    "appId": "1:555502389734:web:2a977e89e54df3c69cae27",
+    "measurementId": "G-XFLZV89Q56",
+    "databaseURL": "https://quizck-74e04-default-rtdb.firebaseio.com/"
+  }
+
+  firebase.initializeApp(config);
+  const dbRef = firebase.database().ref();
+
+  var code="{{code}}";
+    dbRef.child("games/"+code).on('value',function(snapshot){
+    
+      snapshot.forEach(function(child) {
+        if(child.key=='newplayer'){
+          var all=child.val();
+          var content="";
+          for(var i=0;i<all.length;i++){
+            content+=all[i]+"     ";
+          }
+          $('#fire').text(content)
+        }
+      });
+    });
+  dbRef.child("games/"+code).on('child_changed', function(snapshot){
+    if(snapshot.key=='newplayer'){    
+      var all=snapshot.val();
+      var content="";
+          for(var i=0;i<all.length;i++){
+            content+=all[i]+"     ";
+          }
+          $('#fire').text(content);
+    }
+    else if(snapshot.key=='next'){    
+      window.location="{% url 'showQuiz' %}";
+    }
+  });
+
+  </script>
+  {% ifequal user "admin" %}
+  <script>
+  $('#next').click(function(){
+    console.log("inside click function");
+    dbRef.child("games/"+code).once('value',function(snapshot){
+    
+      console.log("inside snapshot");
+      snapshot.forEach(function(child) {
+        if(child.key=='next'){
+          var status=child.val();
+          console.log("inside Next");
+          dbRef.child("games/"+code).update({"next":1-status});
+          console.log("After Updation");         
+        }
+        console.log("outside if");
+      });
+      console.log("outside for");
+    });
+    console.log("outside snapshot");
+  });
+  console.log("end of click");
+
+  </script>
+  {% endifequal%}
+{% endblock %}

@@ -1,0 +1,234 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}
+    Quiz Page
+{% endblock %} 
+{% block style %}
+
+@media only screen and (max-width: 200px) {
+      .masthead.segment {
+        min-height: 150px;
+      }
+      .masthead h1.ui.header {
+        font-size: 2em;
+        margin-top: 1.5em;
+      }
+      .masthead h2 {
+        margin-top: 0.5em;
+        font-size: 1.5em;
+      }
+    }
+    .masthead.segment {
+      min-height: 50px;
+      padding: 1em 0em;      
+    }
+    .masthead h1.ui.header {
+      margin-top: 0em;
+      margin-bottom: 0em;
+      font-size: 3em;
+      font-weight: normal;
+    }
+    .masthead h2 {
+      font-size: 2em;
+      font-weight: normal;
+      margin-bottom: 2em;
+    }
+    #head{
+      margin-bottom:1.5em;
+    }
+    body {
+      background-image: radial-gradient(#EAECC6, #2BC0E4);
+      background-color: #DADADA;
+      font-family:'Times New Roman';
+      
+    }
+    ::-webkit-scrollbar {
+        width: 0;
+        background: transparent;
+    }
+    body > .grid {
+      
+      height: 100%;
+      
+    }
+    .ui.list{
+      height: 20%;
+      overflow-y: scroll;
+    }
+    #ques{
+      max-height: 55%;
+      overflow-y: scroll;
+    }
+    #qq{
+      border:3px solid;
+      border-color: #64C8DE;
+      padding:1em;
+      border-radius:3em;
+    }
+    #statis{
+      padding-top:4.5em;
+    }
+    .btt{
+      height: 5em;
+      border-radius:3em !important;
+      font-size:1.2em !important;
+    }
+    
+{% endblock %} 
+{% block body %}
+<div id="head" class="ui inverted vertical masthead center aligned segment ">
+    <div class="ui text container">      
+      <h1 class="ui inverted header">Questions</h1><br>
+      <div class="ui two colum centered grid">
+        <img class="large ui image" src="{% static 'asking.svg' %}">        
+      </div>
+      <br>
+    </div>
+  </div>
+  <div class="ui grid">
+    <div class="ui three wide column middle center aligned" style="padding:0px;">
+      <div class="ui statistic">
+        <div class="value" id="statis">
+          {{quiz.marks}}
+        </div>
+        <div class="label">
+          Marks
+        </div>
+      </div>
+    </div>
+    <div id="ques" class="ui ten wide column segment" style="background-color: white;">
+      <form id='form' action="leaderboard" method="POST" onsubmit="myFunction()">
+        {% csrf_token %}<br>
+        <div>
+          <h2 id="qq">
+            <b>
+              Question{{quiz.questionNumber}}:&nbsp {{quiz.question}}
+            </b>
+          </h2><br>
+        </div>
+        <br>
+        <div class="ui centered padded grid">          
+          <input class="btt ui six wide column inverted teal button" type="button" id="1" value="{{quiz.option1}}">
+          <div class="ui two wide column"></div>
+          <input class="btt ui six wide column inverted teal button" type="button" id="2" value="{{quiz.option2}}">
+          <div class="ui sixteen wide column"></div>
+          <input class="btt ui six wide column inverted teal button" type="button" id="3" value="{{quiz.option3}}">
+          <div class="ui two wide column"></div>
+          <input class="btt ui six wide column inverted teal button" type="button" id="4" value="{{quiz.option4}}">
+        </div>
+
+        <br>
+
+        <br>
+        <br>
+        <input type="hidden" value="" id="hidden_option" name="options"/>
+      </form>
+    </div>
+    <div class="ui three wide column">
+      <div class="ui olive progress" id="example2" style="margin-right:0.4em;">
+        <div class="bar"></div>
+      </div>
+      <h1><i class="big clock outline icon"></i><span id="stopwatch">{{quiz.timer}}</span></h1>
+      
+    </div>
+  </div>    
+
+    
+
+    <script>
+        const timer = document.getElementById('stopwatch');
+        sec = {{quiz.timer}}+1;
+        console.log("ok");
+        var answer="";
+        timerCycle();
+        console.log("finish");
+        $('#example2').progress({
+          percent: 100
+        });
+
+      var sec = {{quiz.timer}}+1;
+      function myFunction(){
+        console.log("for submitted");
+        $('#hidden_option').val(answer);
+      }
+      var per={{quiz.timer}}+1;
+      function timerCycle() {
+        var tim=100-((per-sec)/per)*100;
+        if(sec==1)tim=0;
+        $('#example2').progress({
+          percent: tim
+        });
+        sec=sec-1;
+        sec=Math.max(sec,-1)
+        if(sec==-1){
+          console.log("ok1");
+          
+          $('#form').submit();
+          return;
+        }
+        var x=sec;
+        if (x < 10 || x == 0) {
+          x='0'+x;
+        }
+        timer.innerHTML = x;
+        if(sec>=0) setTimeout("timerCycle()", 1000);
+      }
+      $('#1').click(function(){
+        $(this).removeClass('teal');
+        $(this).addClass('olive');
+        $('#2').removeClass('olive');
+        $('#3').removeClass('olive');
+        $('#4').removeClass('olive');
+        $('#2').addClass('teal');
+        $('#3').addClass('teal');
+        $('#4').addClass('teal');
+        answer=$(document.activeElement).attr('id');
+        // console.log("1");
+        // console.log($(document.activeElement).attr('id'));
+      });
+      $('#2').click(function(){
+        $(this).removeClass('teal');
+        $(this).addClass('olive');
+        $('#1').removeClass('olive');
+        $('#3').removeClass('olive');
+        $('#4').removeClass('olive');
+        $('#1').addClass('teal');
+        $('#3').addClass('teal');
+        $('#4').addClass('teal');
+        answer=$(document.activeElement).attr('id');
+        // console.log("2");
+        // console.log($(document.activeElement).attr('id'));
+      });
+      $('#3').click(function(){
+        $(this).removeClass('teal');
+        $(this).addClass('olive');
+        $('#2').removeClass('olive');
+        $('#1').removeClass('olive');
+        $('#4').removeClass('olive');
+        $('#2').addClass('teal');
+        $('#1').addClass('teal');
+        $('#4').addClass('teal');
+        answer=$(document.activeElement).attr('id');
+        // console.log("3");
+        // console.log($(document.activeElement).attr('id'));
+      });
+      $('#4').click(function(){
+        $(this).removeClass('teal');
+        $(this).addClass('olive');
+        $('#2').removeClass('olive');
+        $('#3').removeClass('olive');
+        $('#1').removeClass('olive');
+        $('#2').addClass('teal');
+        $('#3').addClass('teal');
+        $('#1').addClass('teal');
+        answer=$(document.activeElement).attr('id');
+        // console.log("4");
+        // console.log($(document.activeElement).attr('id'));
+      });
+
+      
+
+      
+      
+    </script>
+{% endblock %}

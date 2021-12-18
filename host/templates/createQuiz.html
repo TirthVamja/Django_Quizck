@@ -1,0 +1,202 @@
+{% extends "base.html" %}
+{% load static %}
+{% block style %}
+@media only screen and (max-width: 200px) {
+      .masthead.segment {
+        min-height: 50px;
+      }
+      .masthead h1.ui.header {
+        font-size: 2em;
+        margin-top: 1.5em;
+      }
+      .masthead h2 {
+        margin-top: 0.5em;
+        font-size: 1.5em;
+      }
+    }
+    .masthead.segment {
+      min-height: 50px;
+      padding: 1em 0em;      
+    }
+    .masthead h1.ui.header {
+      margin-bottom: 0em;
+      font-size: 5em;
+      font-weight: normal;
+    }
+    .masthead h2 {
+      font-size: 2em;
+      font-weight: normal;
+      margin-bottom: 0em;
+    }
+    body {
+      background-color: #DADADA;
+      font-family:'Times New Roman';
+    }
+    body > .grid {
+      height: 100%;
+    }
+    .ui.list{
+      height: 200px;
+      overflow-y: scroll;
+    }
+    .ui.menu{
+      height: 80px;
+    }
+    .ui.form{
+      margin-top: 4em;
+      /* margin-left: 4em; */
+    }
+    .field{
+      width: 20em;
+    }
+    .outer{
+      background-color:red;
+      width:100%;
+    }
+    .ui.large.form {
+      font-size: 1.5em;
+    }
+    .container{
+      text-align: center;
+    }
+    .hidden_button{
+      visibility:hidden;
+    }
+    .split {
+      height: 100%;
+      width: 50%;
+      position: fixed;
+      z-index: 1;
+      top: 0;
+      overflow-x: hidden;
+    }
+    .left {
+      left: 0;
+    }
+    .inner {
+      right: 0;
+    }
+    .ui.grid{
+      margin-top:0px;
+    }
+    input{
+      border-radius:0.5em !important;
+    }
+{% endblock %}
+{% block body %}
+  <div class="ui grid">
+    <div class="ui seven wide column inverted vertical masthead center aligned segment">
+      
+      <h1 class="ui inverted header" style="margin-top:2em; margin-bottom:1em;">Create Quiz</h1><br>
+      <img class="ui centered big image" src="{% static 'book.svg' %}">
+    </div>
+
+    <div class="ui nine wide column" style="margin-top:100px;">
+      <form class="ui large form" action="" method="POST">
+        {% csrf_token %}
+        <div class="ui grid">
+          <div class="three wide column"></div>
+          <div class="ten wide field">
+            <label>Enter Question</label>
+            <input id="id_question" type="text" name="question" placeholder="Enter Question">
+          </div>
+          <div class="three wide column"></div>
+          <div class="three wide column"></div>
+          <div class="ten wide field">
+            <div class="two fields">
+              <div class="eight wide field">
+                <label class="">Option1</label>
+                <input id="id_option1" type="text" name="option1" placeholder="">
+              </div>
+              <div class="eight wide field">
+                <label>Option2</label>
+                <input id="id_option2" type="text" name="option2" placeholder="">
+              </div>
+            </div>
+          </div>
+          <div class="three wide column"></div>
+          <div class="three wide column"></div>
+          <div class="ten wide field">
+            <div class="two fields">
+              <div class="eight wide field">
+                <label class="">Option3</label>
+                <input id="id_option3" type="text" name="option3" placeholder="">
+              </div>
+              <div class="eight wide field">
+                <label>Option4</label>
+                <input id="id_option4" type="text" name="option4" placeholder="">
+              </div>
+            </div>
+          </div>
+          <div class="three wide column"></div>
+          <div class="three wide column"></div>
+          <div class="ten wide field">
+            <div class="three fields">
+              <div class="eight wide field">
+                <label>Answer</label>
+                <div class="ui selection dropdown">
+                  <input type="hidden" name="answer" id="id_answer">
+                  <i class="dropdown icon"></i>
+                  <div class="default text">Select Answer</div>
+                  <div class="menu">
+                    <div class="item" data-value="1">Option1</div>
+                    <div class="item" data-value="2">Option2</div>
+                    <div class="item" data-value="3">Option3</div>
+                    <div class="item" data-value="4">Option4</div>
+                  </div>
+                </div>
+              </div>
+              <div class="one wide field"></div>
+              <div class="three wide field">
+                <label>Marks</label>
+                <input id="id_marks" type="number" name="marks">
+              </div>
+              <div class="one wide field"></div>
+              <div class="three wide field">
+                <label>Time(s)</label>
+                <input id="id_timer" type="text" name="timer">
+              </div>
+
+            </div>
+          </div>
+          <div class="three wide column"></div>
+          
+          <div class="six wide column"></div>
+          <div class="container" style="margin-top:120px;">
+            <div class="center-button">
+              <div class="massive ui buttons">
+                <a class="ui animated positive button" tabindex="0" id="next">
+                  <div class="visible content">Next</div>
+                  <div class="hidden content">
+                    <i class="right arrow icon"></i>
+                  </div>
+                </a>
+                <div class="or"></div>
+                <div class="ui animated button" tabindex="0" id="done">
+                  <div class="visible content">Done</div>
+                  <div class="hidden content">
+                    <i class="check icon"></i>
+                  </div>
+                </div>
+
+
+                <!-- <button type="submit" class="ui positive button" formaction="done">Done</button> -->
+              </div>
+            </div>
+          </div>
+        </div>
+        <input type="submit" formaction="createQuiz" class="hidden_button" id="hidden_next"/>
+        <input type="submit" formaction="done" class="hidden_button" id="hidden_done"/>
+      </form>
+    </div>
+  </div>
+  <script>
+    $('.ui.dropdown').dropdown();
+    $('#next').click(function(){
+      $("#hidden_next").click();
+    });
+    $('#done').click(function(){
+      $("#hidden_done").click();
+    });
+  </script>
+{% endblock %}

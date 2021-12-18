@@ -1,0 +1,198 @@
+{% extends 'base.html' %}
+{% block style %}
+  @media only screen and (max-width: 200px) {
+      .masthead.segment {
+        min-height: 150px;
+      }
+      .masthead h1.ui.header {
+        font-size: 2em;
+        margin-top: 1.5em;
+      }
+      .masthead h2 {
+        margin-top: 0.5em;
+        font-size: 1.5em;
+      }
+    }
+    .masthead.segment {
+      min-height: 50px;
+      padding: 1em 0em;      
+    }
+    .masthead h1.ui.header {
+      margin-top: 1em;
+      margin-bottom: 0em;
+      font-size: 5em;
+      font-weight: normal;
+    }
+    .masthead h2 {
+      font-size: 2em;
+      font-weight: normal;
+      margin-bottom: 2em;
+    }
+    #head{
+      margin-bottom:1.5em;
+    }
+    body {
+      background-color: #DADADA;
+      font-family:'Times New Roman';
+    }
+    body > .grid {
+      height: 100%;
+    }
+    .ui.list{
+      height: 20%;
+      overflow-y: scroll;
+    }
+{% endblock %}
+
+{% block body %}
+
+  <div id="head" class="ui inverted vertical masthead center aligned segment ">
+    <div class="ui text container">
+      <h1 class="ui inverted header">Waiting Area</h1>
+      <h2 class="ui inverted">Quiz Code &nbsp;<span class="ui big red tag label">{{ code }}</span></h2>
+      {% ifequal user "admin" %}
+      <a id="showQ" class="ui huge primary button">
+      Lets Play <i class="right arrow icon"></i>
+      </a>
+      {% endifequal %}
+    </div>
+  </div>
+<div class="ui grid">
+  <div class="ui two wide column vertical centered statistic">
+    <div class="value">
+      <i class="users icon"></i>
+      <span id="total">0</span>
+    </div>
+    <div class="label">
+      Players
+    </div>
+  </div>
+  <div class="ui twelve wide column container segment">
+    {% ifequal user "admin" %}
+    <div class="ui info message">
+      <div class="header">
+        Message: Click on the player to Remove
+      </div>
+    </div>
+    {% endifequal %}
+    <span id="fire"></span>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/4.8.1/firebase.js"></script>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script>
+  
+  var config = {
+  "apiKey": "AIzaSyDNn1-wkMm-g0cH2BKQ6XjdLTl6ldds8ZE",
+  "authDomain": "quizck-74e04.firebaseapp.com",
+  "projectId": "quizck-74e04",
+  "storageBucket": "quizck-74e04.appspot.com",
+  "messagingSenderId": "555502389734",
+  "appId": "1:555502389734:web:2a977e89e54df3c69cae27",
+  "measurementId": "G-XFLZV89Q56",
+  "databaseURL": "https://quizck-74e04-default-rtdb.firebaseio.com/"
+}
+
+firebase.initializeApp(config);
+const dbRef = firebase.database().ref();
+
+function getRandomColor(){
+  var all=['pink','grey','red','orange','yello','olive','green','teal','blue','violet','purple','pink','brown','grey'];
+  var randomColor = all[Math.floor(Math.random()*all.length)];
+  return randomColor;
+}
+
+var code="{{code}}";
+var user="{{user}}";
+var globalAll=[];
+  dbRef.child("games/"+code).once('value',function(snapshot){
+    snapshot.forEach(function(child) {
+      if(child.key=='newplayer'){
+        var all=child.val();
+        globalAll=all;
+        var content="";
+        $('#total').text(all.length-1);
+        for(var i=1;i<all.length;i++){
+          if(user == "admin"){
+            var tmp='<a onclick="clicked(\''+all[i]+'\')" class="ui huge '+getRandomColor()+' label" id="'+all[i]+'" data-tooltip="Remove '+all[i]+'">';
+            tmp+='<img class="ui right spaced huge image" src="https://avatars.dicebear.com/v2/avataaars/'+all[i]+'.svg"><span class="test">';      
+            tmp+=all[i]+'</span></a>';
+            content+=tmp;
+          }
+          else{
+            var tmp='<a class="ui huge '+getRandomColor()+' label" id="'+all[i]+'" >';
+            tmp+='<img class="ui right spaced huge image" src="https://avatars.dicebear.com/v2/avataaars/'+all[i]+'.svg"><span class="test">';      
+            tmp+=all[i]+'</span></a>';
+            content+=tmp;
+          }
+        }
+        $('#fire').append(content)
+      }
+    });
+  });
+  dbRef.child("games/"+code).on('child_changed', function(snapshot){
+    if(snapshot.key=='newplayer'){
+      var cont=[];
+      var prev=document.querySelectorAll(".test");
+      for(var i=0;i<prev.length;i++){
+        cont.push(prev[i].innerText);
+      }
+      var all=snapshot.val();
+      globalAll=all;
+      $('#total').text(all.length-1);
+      for(var i=0;i<cont.length;i++){
+        if(!all.includes(cont[i])){
+          if(user=="player" && cont[i]=="{{playername}}"){
+            window.location="{% url 'removed' %}";
+          }
+          var iid='#'+cont[i];
+          $(iid).remove();
+        }
+      }
+      for(var i=1;i<all.length;i++){
+        if(!cont.includes(all[i])){
+          if(user == "admin"){
+            var tmp='<a onclick="clicked(\''+all[i]+'\')" class="ui huge '+getRandomColor()+' label" id="'+all[i]+'" data-tooltip="Remove '+all[i]+'">';
+            tmp+='<img class="ui right spaced huge image" src="https://avatars.dicebear.com/v2/avataaars/'+all[i]+'.svg"><span class="test">';      
+            tmp+=all[i]+'</span></a>'; 
+            $('#fire').append(tmp);
+          }
+          else{
+            var tmp='<a class="ui huge '+getRandomColor()+' label" id="'+all[i]+'">';
+            tmp+='<img class="ui right spaced huge image" src="https://avatars.dicebear.com/v2/avataaars/'+all[i]+'.svg"><span class="test">';      
+            tmp+=all[i]+'</span></a>';
+            $('#fire').append(tmp);
+          }
+          
+        }
+      }
+    }
+    else if(snapshot.key=='next'){    
+      window.location="{% url 'showQuiz' %}";
+    }
+  });
+
+  function clicked(plyr){
+    console.log(plyr);
+    var allData=globalAll;
+    const index = allData.indexOf(plyr);
+    if (index > -1) {
+      allData.splice(index, 1);
+    }
+    dbRef.child("games/"+code).update({"newplayer":allData});
+  }
+
+</script>
+{% ifequal user "admin" %}
+<script>
+  $('#showQ').click(function(){
+    window.location="{% url 'showQuiz' %}";
+    dbRef.child("games/"+code).update({"started":1});
+    dbRef.child("games/"+code).update({"next":1});  
+  });
+
+</script>
+{% endifequal%}
+
+{% endblock %}

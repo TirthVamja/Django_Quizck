@@ -1,0 +1,53 @@
+<html>
+    <head>
+        <title>JavaScript</title> 
+    </head>
+    <body>
+      <form action="../tryy" method="POST">
+        {% csrf_token %}
+        {% for q in query %}
+        <br>
+        Question{{q.fields.questionNumber}}:&nbsp
+        {{q.fields.question}}<br>
+        1)<input type="radio" id="option1" value="1" name="options">
+          <label for="html">{{q.fields.option1}}</label><br>
+        2)<input type="radio" id="option2" value="2" name="options">
+          <label for="html">{{q.fields.option2}}</label><br>
+        3)<input type="radio" id="option3" value="3" name="options">
+          <label for="html">{{q.fields.option3}}</label><br>
+        4)<input type="radio" id="option4" value="4" name="options">
+          <label for="html">{{q.fields.option4}}</label><br>
+        Marks:{{q.fields.marks}}<br>
+        Time:{{q.fields.timer}}
+        <br><hr>
+        {% endfor %}
+        <input type="submit" value="Done">
+      </form>
+      <br>
+      {{code}}
+      <div id="stopwatch">       
+      </div>
+      <button onclick="timerCycle()">Click</button>
+      <button onclick="play()">Play</button>
+    </body>
+</html>
+
+<script>
+  var sec = {{sec}};
+  const timer = document.getElementById('stopwatch');
+  function timerCycle() {
+
+      sec=sec-1;
+      if(sec<0) return;
+      var x=sec;
+      if (x < 10 || x == 0) {
+        x='0'+x;
+      }
+      timer.innerHTML = x;
+      if(sec!=0) setTimeout("timerCycle()", 1000);
+  }
+  function play(){
+    window.location="{% url 'waiting' %}";
+  }
+  
+</script>

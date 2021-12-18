@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block style %}
+@media only screen and (max-width: 200px) {
+      .masthead.segment {
+        min-height: 150px;
+      }
+      .masthead h1.ui.header {
+        font-size: 2em;
+        margin-top: 1.5em;
+      }
+      .masthead h2 {
+        margin-top: 0.5em;
+        font-size: 1.5em;
+      }
+    }
+    .masthead.segment {
+      min-height: 50px;
+      padding: 1em 0em;      
+    }
+    .masthead h1.ui.header {
+      margin-top: 0.2em;
+      margin-bottom: 0em;
+      font-size: 5em;
+      font-weight: normal;
+    }
+    .masthead h2 {
+      font-size: 2em;
+      font-weight: normal;
+      margin-bottom: 2em;
+    }
+    #head{
+      margin-bottom:1.5em;
+    }
+    body {
+      background-color: #DADADA;
+      font-family:'Times New Roman';
+    }
+    body > .grid {
+      height: 100%;
+    }
+    .ui.list{
+      height: 200px;
+      overflow-y: scroll;
+    }
+    .ui.menu{
+      height: 80px;
+    }
+    #playQ{
+      margin-top:0.5em;
+    }
+    #result{
+      height: 45%;
+      overflow-y:scroll;
+    }
+{% endblock %}
+{% block body %}
+<div id="head" class="ui inverted vertical masthead center aligned segment ">
+    <div class="ui text container">      
+      <h1 class="ui inverted header">Statistics</h1><br>
+      <div class="ui two colum centered grid">
+        <img class="large ui image" src="{% static 'files.svg' %}">        
+      </div>
+      <br>
+    </div>
+    <a id="playQ" onclick="quiz('{{quizId}}')" class="ui huge primary button">
+      Play Quiz <i class="right arrow icon"></i>
+      </a>
+  </div>
+<div class="ui container" id="result">
+  <table class="ui celled table">
+    <thead>
+      <tr>
+        <th>Sr. No</th>
+        <th>Quiz Date</th>
+        <th>Quiz Code</th>
+        <th> </th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for gameId , gameTime in games %}
+        <tr>
+          <td>{{forloop.counter}}</td>
+          <td>{{gameTime}}</td>
+          <td>{{gameId}} </td>
+          <td><button class="ui teal button" onclick="download('{{gameId}},{{quizId}}')">
+            Download Result&nbsp;
+            <i class="download icon"></i>
+            </button><br></td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+  <script>
+    function quiz(id){
+        window.location = "{% url 'quizPage' 1234 %}".replace(/1234/, id.toString());
+    }
+    function download(id){
+        window.location = "{% url 'download' 1234 %}".replace(/1234/, id.toString());
+    }
+</script>
+{% endblock %}

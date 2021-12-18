@@ -1,0 +1,36 @@
+{
+  "files": {
+    "game/models.py": [
+      {
+        "id": "1d0a6472-b657-4680-a8aa-082872951bbc",
+        "line": 4,
+        "version": 1,
+        "index": 57
+      }
+    ],
+    "host/models.py": [
+      {
+        "id": "ebf519c3-4590-4369-a54b-13e2605ab19c",
+        "line": 27,
+        "version": 881,
+        "index": 822
+      }
+    ],
+    "host/templates/waiting.html": [
+      {
+        "id": "52ae411a-b904-4a72-8769-bb7d76a62cee",
+        "line": 64,
+        "version": 2898,
+        "index": 1434
+      }
+    ],
+    "login/forms.py": [
+      {
+        "id": "dbe60491-e202-4eee-9bcd-48a6ca07f579",
+        "line": 20,
+        "version": 22,
+        "index": 527
+      }
+    ]
+  }
+}

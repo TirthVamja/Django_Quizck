@@ -1,0 +1,93 @@
+<head>
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.css" integrity="sha512-8bHTC73gkZ7rZ7vpqUQThUDhqcNFyYi2xgDgPDHc+GXVGHXq+xPjynxIopALmOPqzo9JZj0k6OqqewdGO3EsrQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.4.1/semantic.min.js" integrity="sha512-dqw6X88iGgZlTsONxZK9ePmJEFrmHwpuMrsUChjAw1mRUhUITE5QU9pkcSox+ynfLhL15Sv2al5A0LVyDCmtUw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>  <style type="text/css">
+  @media only screen and (max-width: 200px) {
+      .masthead.segment {
+        min-height: 150px;
+      }
+      .masthead h1.ui.header {
+        font-size: 2em;
+        margin-top: 1.5em;
+      }
+      .masthead h2 {
+        margin-top: 0.5em;
+        font-size: 1.5em;
+      }
+    }
+    .masthead.segment {
+      min-height: 100px;
+      padding: 1em 0em;      
+    }
+    .masthead h1.ui.header {
+      margin-top: 1em;
+      margin-bottom: 0em;
+      font-size: 5em;
+      font-weight: normal;
+    }
+    .masthead h2 {
+      font-size: 2em;
+      font-weight: normal;
+      margin-bottom: 2em;
+    }
+    #head{
+      margin-bottom:1.5em;
+    }
+    body {
+      background-color: #DADADA;
+      font-family:'Times New Roman';
+    }
+    body > .grid {
+      height: 100%;
+    }
+    .column {
+      max-width: 450px;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="head" class="ui inverted vertical masthead center aligned segment ">
+    <div class="ui text container">
+      <h1 class="ui inverted header">Quizck</h1>
+      <h2 class="ui inverted">Play, Compete and Learn</h2>
+    </div>
+  </div>
+
+  <div class="ui aligned center aligned grid">
+    <div class="column">
+      <h2 class="ui teal header">
+        <div class="content">
+          Enter Quiz Code
+        </div>
+      </h2>
+      <form class="ui large form" action="" method="POST">
+        {% csrf_token %}
+        <div class="ui stacked segment">
+          <div class="field">
+            <div class="ui left icon input">
+              <i class="user icon"></i>
+              <input type="text" name="username" value="{{username}}" placeholder="Username" required>
+            </div>
+          </div>
+          <div class="field">
+            <div class="ui left icon input">
+              <i class="pencil icon"></i>
+              <input type="text" name="gameid" placeholder="Game Id" value="{{gameid}}" required>
+            </div>
+          </div>
+          <button class="ui fluid large teal submit button" type="submit">Join Quiz</button>
+        </div>
+      </form>
+      {% if messages %}
+        <div class="ui error message">
+          <ul class="list">
+            {% for message in messages %}
+              <li>{{ message }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</body>
